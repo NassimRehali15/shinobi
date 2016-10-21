@@ -3,7 +3,8 @@ namespace Caffeinated\Shinobi\Middleware;
 
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
-
+use Auth;
+use Redirect;
 class UserHasRole
 {
     /**
@@ -32,6 +33,9 @@ class UserHasRole
      */
     public function handle($request, Closure $next, $role)
     {
+        if(Auth::guest()){
+            return Redirect::back();
+        }
         if (! $this->auth->user()->isRole($role)) {
             if ($request->ajax()) {
                 return response('Unauthorized.', 401);
